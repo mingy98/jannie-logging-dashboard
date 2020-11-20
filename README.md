@@ -71,11 +71,11 @@ For each log, we want to extract the above values from a `log.txt` file as a tim
 
 4. **Handling missing information** You'll notice that for some entries in the list, the client or server logs are missing. We want to be able to handle this in the UI, to let the user know that a certain `log.txt` file is missing.
 
-5. **Logging errors** If you open up any log files, you'll see that each line comes with a status code of INFO, WARNING, or ERROR. For each log file, we are interested in how many ERRORs and WARNINGs there are, both in absolute terms and as a percentage of total lines in the log file. Note: you'll want to do this server-side by creating a new endpoint in `app/blueprints/log_blueprint.py` in the server, or appending more code to your endpoint in part #3.
+5. **Log filtering** We want to be able to search for logs by username. Implement a search bar that lets us find all the logs associated with a particular user (Note: not just the logs that have been loaded into the browser, but all the logs that are stored in the server).
 
-6. **Log filtering** We want to be able to search for logs by username. Implement a search bar that lets us find all the logs associated with a particular user (Note: not just the logs that have been loaded into the browser, but all the logs that are stored in the server).
+6. **Bonus features** If you open up any log files, you'll see that each line comes with a status code of INFO, WARNING, or ERROR. For each log file, we are interested in how many ERRORs and WARNINGs there are, both in absolute terms and as a percentage of total lines in the log file. Note: you'll want to do this server-side by creating a new endpoint in `app/blueprints/log_blueprint.py` in the server, or appending more code to your endpoint in part #3.
 
-7. **Bonus features** If you've finished Features 1-6, feel free to get creative and think about features that would be useful to a user, like log bookmarking, summary statistics of errors (i.e. across all the logs, which errors are most common?), summary statistics of time series (what is the median of the time series? correlations between number of errors and median network latency?), etc. or anything else that comes to mind. Impress us by thinking outside the box!
+Additionally, feel free to get creative and think about features that would be useful to a user, like log bookmarking, summary statistics of errors (i.e. across all the logs, which errors are most common?), summary statistics of time series (what is the median of the time series? correlations between number of errors and median network latency?), etc. or anything else that comes to mind. Impress us by thinking outside the box! 
 
 We strongly encourage you to think of a clean UI that can convey all of the above information in a **single paged dashboard (no multiple tabs or multiple pages!)**. For best results, we also strongly recommend using a design/prototyping tool to figure out how you want your dashboard to look before you actually start coding (e.g. Figma, Adobe Illustrator), if you're familiar with such tools.
 
@@ -96,6 +96,10 @@ More specifically, you will be assessed on the following four categories:
 ## How To Submit
 
 To submit, simply create your own branch and push to that branch. We expect you to complete this challenge within 8 hours, although we do understand that there can be unexepected delays in setting up so we will allow for some extra time if needed. After submitting, we may set up a brief phone conversation, where we will discuss your design considerations and show you the actual, internal version of the dashboard that we use.
+
+## This Boilerplate is Not Perfect...
+
+If you decide to use the Flask/React boilerplate we gave you, you may notice that there are some design decisions we made that are not ideal or at the very least debatable. If you find anything about our boilerplate code design that you would change or improve upon, please include it in NOTES.md for bonus points.
 
 ## Final Thoughts
 
