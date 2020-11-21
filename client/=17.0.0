@@ -1,0 +1,10 @@
++ react-dom@16.14.0
++ react@17.0.1
++ @nivo/tooltip@0.63.0
+added 3 packages from 3 contributors, updated 3 packages and audited 2546 packages in 38.926s
+
+96 packages are looking for funding
+  run `npm fund` for details
+
+found 7 low severity vulnerabilities
+  run `npm audit fix` to fix them, or `npm audit` for details

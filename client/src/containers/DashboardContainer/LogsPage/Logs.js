@@ -3,6 +3,8 @@ import { connect } from 'react-redux'
 
 import 'static/App.css'
 import { fetchLogs } from 'actions/index.js'
+import LogTable from './LogTable/LogTable.js'
+
 
 class Logs extends Component {
     constructor(props) {
@@ -10,8 +12,8 @@ class Logs extends Component {
         this.state = {}
     }
 
-    componentDidMount() {
-        this.props.dispatch(fetchLogs())
+    componentDidMount() { // timing?
+        this.props.dispatch(fetchLogs());
     }
 
     componentDidUpdate(prevProps) {}
@@ -29,8 +31,9 @@ class Logs extends Component {
                     transform: 'translate(-50%, -50%)',
                 }}
             >
-                Your code here!
+                <LogTable />
             </div>
+            //<div 
         )
     }
 }

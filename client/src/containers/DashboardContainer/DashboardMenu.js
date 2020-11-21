@@ -15,7 +15,7 @@ class DashboardMenu extends Component {
     constructor(props) {
         super(props)
         this.state = { page: 'dashboard' }
-    }
+    }  
 
     render() {
         return (

@@ -12,7 +12,7 @@ class Admin extends Component {
         super(props)
         this.state = {}
         this.updateWindowDimensions = this.updateWindowDimensions.bind(this)
-    }
+    }   
 
     componentDidMount() {
         this.updateWindowDimensions()

@@ -52,7 +52,7 @@ ReactDOM.render(
                     <Route path="/" component={Dashboard} />
                 </Switch>
             </PersistGate>
-        </Provider>
+        </Provider> 
     </Router>,
     document.getElementById('root')
 )

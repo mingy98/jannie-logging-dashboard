@@ -1,0 +1,15 @@
++ react@16.13.1
++ react-konva@17.0.0-0
++ react-zdog@1.0.11
++ zdog@1.1.2
++ react-three-fiber@5.3.1
++ @nivo/core@0.65.0
++ konva@7.1.9
++ three@0.122.0
+added 24 packages from 11 contributors, updated 1 package and audited 2543 packages in 31.728s
+
+96 packages are looking for funding
+  run `npm fund` for details
+
+found 7 low severity vulnerabilities
+  run `npm audit fix` to fix them, or `npm audit` for details

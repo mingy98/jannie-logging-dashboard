@@ -11,14 +11,15 @@ function* fetchLogs(action) {
     const { json } = yield call(
         apiGet,
         format(
-            config.url.PRIMARY_SERVER + '/logs?start={0}&end={1}',
-            '0',
-            '100'
+            config.url.PRIMARY_SERVER + '/logs' //?start={0}&end={1}',
+            //action.start,
+            //action.end
         )
     )
 
     if (json && json.logs) {
-        yield put(Action.storeLogs(json.logs))
+        yield console.log(json);
+        yield put(Action.storeLogs(json.logs))  
     }
 }
 
