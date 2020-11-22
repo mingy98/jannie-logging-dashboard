@@ -3,7 +3,8 @@ import { connect } from 'react-redux'
 import { Route, Switch } from 'react-router-dom'
 
 import DashboardMenu from 'containers/DashboardContainer/DashboardMenu'
-import Logs from 'containers/DashboardContainer/LogsPage/Logs'
+//import Logs from 'containers/DashboardContainer/LogsPage/Logs'
+import Logs from 'containers/DashboardContainer/LogsPage/Logs.js'
 
 import 'static/App.css'
 

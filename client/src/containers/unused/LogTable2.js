@@ -15,7 +15,7 @@ import {
     TableHeaderRow,
     TableFilterRow,
 } from '@devexpress/dx-react-grid-material-ui';
-import { config } from '../../../../constants.js'
+import { config } from '../../constants.js'
 import {connect} from 'react-redux';
 
 

@@ -7,6 +7,7 @@ export const START_LOADING = 'START_LOADING'
 export const REQUEST_ERROR = 'REQUEST_ERROR'
 export const FETCH_INIT = 'FETCH_INIT'
 export const UPDATE_QUERY = 'UPDATE_QUERY'
+export const CHANGE_SEARCH = 'CHANGE_SEARCH'
 
 
 

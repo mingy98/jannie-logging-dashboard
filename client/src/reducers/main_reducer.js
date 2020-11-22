@@ -1,17 +1,19 @@
 import * as Action from 'actions/index'
 
+
+const VIRTUAL_PAGE_SIZE = 10;
+
 const DEFAULT = {
-    logs: [],
-    //rows: [],
-    skip: 0,
-    requestedSkip: 0,
-    take: 200,
-    totalCount: 0,
-    loading: false,
-    lastQuery: '',
-    sorting: [],
-    filters: [],
-    forceReload: false,
+  rows: [],
+  skip: 0,
+  requestedSkip: 0,
+  take: VIRTUAL_PAGE_SIZE * 2,
+  totalCount: 0,
+  loading: false,
+  lastQuery: '',
+  searchString: '',
+  forceReload: false,
+    
 }
 
 export default function (state = DEFAULT, action) {
@@ -26,21 +28,6 @@ export default function (state = DEFAULT, action) {
                   ...state,
                   ...action.payload,
                   loading: false,
-                };
-            case Action.CHANGE_SORTING:
-                return {
-                  ...state,
-                  forceReload: true,
-                  rows: [],
-                  sorting: action.payload,
-                };
-            case Action.CHANGE_FILTERS:
-                return {
-                  ...state,
-                  forceReload: true,
-                  requestedSkip: 0,
-                  rows: [],
-                  filters: action.payload,
                 };
             case Action.START_LOADING:
                 return {
@@ -64,6 +51,14 @@ export default function (state = DEFAULT, action) {
                   ...state,
                   lastQuery: action.payload,
             };
+            case Action.CHANGE_SEARCH:
+                return {
+                  ...state,
+                  forceReload: true,
+                  requestedSkip: 0,
+                  rows: [],
+                  searchString: action.payload,
+                };
         default: 
             return state
     }
