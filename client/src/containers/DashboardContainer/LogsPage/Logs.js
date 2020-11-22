@@ -1,5 +1,9 @@
 import React, {
-    useReducer, useState, useEffect, useMemo,
+    useReducer,
+    useState,
+    useEffect,
+    useMemo,
+    useContext,
 } from 'react';
 import Paper from '@material-ui/core/Paper';
 import {
@@ -21,92 +25,15 @@ import {
 import { Loading } from '../../../assets/Loading/loading.jsx';
 import { config, VIRTUAL_PAGE_SIZE } from '../../../constants.js';
 import LogInfo from 'containers/DashboardContainer/LogsPage/LogInfo/LogInfo.js';
-import * as Action from 'actions/index'
+import reducer from "../../../reducers/reducer.js"
+import LogsContext from "./context.js"
 
 const URL = config.url.PRIMARY_SERVER;
 
 const getRowId = row => row.connection_id;
 
-const initialState = {
-    rows: [],
-    skip: 0,
-    requestedSkip: 0,
-    take: VIRTUAL_PAGE_SIZE * 2,
-    totalCount: 0,
-    loading: false,
-    lastQuery: '',
-    searchString: '',
-    forceReload: false,
-    selectionChanged: false,
-    selected: 0,
-    data: [ { title: "Latency", data: [] },
-            { title: "Average Decode Time", data: [] },
-            { title: "Average Encode Time", data: [] },
-            { title: "Average Encode Size", data: [] },
-    ],
-};
-
-function reducer(state, { type, payload }) {
-    switch (type) {
-        case 'UPDATE_ROWS':
-            return {
-                ...state,
-                ...payload,
-                loading: false,
-            };
-        case 'START_LOADING':
-            return {
-                ...state,
-                requestedSkip: payload.requestedSkip,
-                take: payload.take,
-            };
-        case 'REQUEST_ERROR':
-            return {
-                ...state,
-                loading: false,
-            };
-        case 'FETCH_INIT':
-            return {
-                ...state,
-                loading: true,
-                forceReload: false,
-            };
-        case 'UPDATE_QUERY':
-            return {
-                ...state,
-                lastQuery: payload,
-            };
-        case 'CHANGE_SEARCH':
-            return {
-                ...state,
-                forceReload: true,
-                requestedSkip: 0,
-                rows: [],
-                searchString: payload,
-            };
-        case 'CHANGE_SELECTION':
-            return {
-                ...state,
-                selected: payload[1],
-                selectionChanged: true,
-            };
-        case 'CHANGE_SELECTION_DONE':
-            return {
-                ...state,
-                selectionChanged: false,
-            };
-        case 'SET_SELECTION_DATA':
-            return {
-                ...state,
-                data: payload
-            }
-
-        default:
-            return state;
-    }
-}
-
-export default () => {
+export default function Logs() {
+    const initialState = useContext(LogsContext)
     const [state, dispatch] = useReducer(reducer, initialState);
 
     const [columns] = useState([
@@ -117,8 +44,8 @@ export default () => {
         { name: 'version', title: 'Version', getCellValue: row => row.version },
     ]);
     const [tableColumnExtensions] = useState([
-        { columnName: 'username', width: '300'},
-        { columnName: 'connection_id', width: '150'},
+        { columnName: 'username', width: '300' },
+        { columnName: 'connection_id', width: '150' },
         { columnName: 'ip', width: '150' },
         { columnName: 'last_updated', width: '200' },
         { columnName: 'version', width: '200' },
@@ -142,23 +69,23 @@ export default () => {
 
     const buildDataQuery = () => {
         const {
-            requestedSkip, take, searchString,
+            requestedSkip,
+            take,
+            searchString,
         } = state;
         return `${URL}/logs?skip=${requestedSkip}&take=${take}&search=${searchString}`;
     };
 
-
-    const buildSelectQuery = () => {
+    const loadRows = () => {
         const {
+            requestedSkip,
+            take,
+            lastQuery,
+            loading,
+            forceReload,
+            totalCount,
+            selectionChanged,
             selected,
-        } = state;
-
-        return `${URL}/getvisual?selected=${selected}`;
-    };
-
-    const loadData = () => {
-        const {
-            requestedSkip, take, lastQuery, loading, forceReload, totalCount, selected, selectionChanged,
         } = state;
         const dataQuery = buildDataQuery();
         if ((dataQuery !== lastQuery || forceReload) && !loading) {
@@ -182,26 +109,6 @@ export default () => {
             }
             dispatch({ type: 'UPDATE_QUERY', payload: dataQuery });
         }
-
-        const selectQuery = buildSelectQuery();
-        if ((selectionChanged) && !loading) {
-
-            fetch(selectQuery)
-                .then(response => {
-                    return response.json()
-                })
-                .then((data) => { 
-                    const value = [{ title: "Latency", data: data.latency },
-                    { title: "Average Decode Time", data: data.decode_time },
-                    { title: "Average Encode Time", data: data.encode_time },
-                    { title: "Average Encode Size", data: data.encode_size },
-                    ]
-                    console.log(value)
-                    dispatch({ type: 'SET_SELECTION_DATA', payload: value })
-                })
-                .catch(() => dispatch({ type: 'REQUEST_ERROR' }));
-            dispatch({ type: 'CHANGE_SELECTION_DONE' });
-        }
     };
 
     const changeSearch = (value) => {
@@ -213,52 +120,56 @@ export default () => {
     };
 
 
-    useEffect(() => loadData());
+    useEffect(() => loadRows());
 
     const {
-        rows, skip, totalCount, loading, selected, data
+        rows,
+        skip,
+        totalCount,
+        loading,
+        selected,
     } = state;
 
 
     return (
-        <div>
-            <LogInfo data={data} />
-            <Paper>
-                <Grid
-                    rows={rows}
-                    columns={columns}
-                    getRowId={getRowId}
-                >
-                    <SearchState onValueChange={changeSearch} defaultValue="" />
-                    <SelectionState
-                        selection={[selected]}
-                        onSelectionChange={changeSelection}
-                        defaultValue=""
-                    />
-                    <VirtualTableState
-                        loading={loading}
-                        totalRowCount={totalCount}
-                        pageSize={VIRTUAL_PAGE_SIZE}
-                        skip={skip}
-                        getRows={getRemoteRows}
-                    />
+        <LogsContext.Provider value={
+            { state, dispatch }} >
+            <div >
+                <LogInfo />
+                <Paper >
+                    <Grid rows={rows}
+                        columns={columns}
+                        getRowId={getRowId} >
+                        <SearchState onValueChange={changeSearch}
+                            defaultValue="" />
+                        <SelectionState selection={
+                            [selected]
+                        }
+                            onSelectionChange={changeSelection}
+                            defaultValue="" />
+                        <VirtualTableState loading={loading}
+                            totalRowCount={totalCount}
+                            pageSize={VIRTUAL_PAGE_SIZE}
+                            skip={skip}
+                            getRows={getRemoteRows}
+                        />
 
-                    <VirtualTable columnExtensions={tableColumnExtensions} />
+                        <VirtualTable columnExtensions={tableColumnExtensions}
+                        />
 
-                    <TableHeaderRow />
-                    <TableSelection
-                        selectByRowClick
-                        highlightRow
-                        showSelectionColumn={false}
-                    />
+                        <TableHeaderRow />
+                        <TableSelection selectByRowClick highlightRow showSelectionColumn={false}
+                        />
 
-                    <Toolbar />
-                    <SearchPanel />
+                        <Toolbar />
+                        <SearchPanel />
 
-                </Grid>
-                {loading && <Loading />}
+                    </Grid> {loading && < Loading />
+                    }
 
-            </Paper>
-        </div>
+                </Paper>
+            </div >
+
+        </LogsContext.Provider>
     );
-};
+}

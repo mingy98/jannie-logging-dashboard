@@ -11,13 +11,8 @@ currentVis = []
 @log_bp.route("/logs", methods=["GET"])
 @fractalPreProcess
 def logs_get(**kwargs):
-    # starting_index = max(0, int(request.args.get("start")))
-    # ending_index = min(int(request.args.get("end")), len(logs))
-
-    # if starting_index >= ending_index or starting_index >= len(logs):
-    #     starting_index = 0
-    #     ending_index = len(logs)
-
+    
+    # get query
     try:
         num_skip = max(0, int(request.args.get('skip')))
         num_take = min(int(request.args.get('take')), len(logs))
@@ -25,8 +20,10 @@ def logs_get(**kwargs):
     except TypeError:
         return jsonify({"logs": logs[0:20], "totalCount": len(logs)}), 200
 
+    # filter down to logs matched to the search
     searchLogs = filterData(searchString, df)
 
+    # get start and end indices to load
     starting_index = int(num_skip)
     ending_index = int(num_skip+num_take)
 
@@ -35,6 +32,7 @@ def logs_get(**kwargs):
         ending_index = len(searchLogs)
 
     return jsonify({"logs": searchLogs[starting_index:ending_index], "totalCount": len(searchLogs)}), 200
+
 
 @log_bp.route("/getvisual", methods=["GET"])
 @fractalPreProcess
@@ -45,19 +43,20 @@ def timeseries_data_get(**kwargs):
     encode_time = []
     latency = []
     decode_time = []
+
+    # get query
     try:
         selectedId = int(request.args.get('selected'))
     except:
         return jsonify({"encode_size":[], "encode_time": [], "latency":[], "decode_time": []}), 200 
 
-    #print(selectedId)
-    # switch to currently visible? possibly faster
+    # get selected log from dataframe
     selectedLog = (df.loc[df['connection_id'] == selectedId]).to_dict('list')
-    #print(selectedLog)
 
     client_log_addr = selectedLog.get('client_logs')[0]
     server_log_addr = selectedLog.get('server_logs')[0]
 
+    # get latency and decode_time data from client
     if client_log_addr is not None:
         r = requests.get(client_log_addr).text
 
@@ -75,11 +74,8 @@ def timeseries_data_get(**kwargs):
 
         latency = lat_df.to_dict('records')
         decode_time = dt_df.to_dict('records')
-
-        # print(latency)
-        # print(decode_time)
         
-
+    # get encode_size and dencode_time data from client
     if server_log_addr is not None:
 
         # fetch data as text, process to dataframe
@@ -96,12 +92,6 @@ def timeseries_data_get(**kwargs):
 
         encode_size = es_df.to_dict('records')
         encode_time = et_df.to_dict('records')
-
-
-        # print(encode_size)
-        # print(encode_time)
-
+        
     return jsonify({"encode_size":encode_size, "encode_time": encode_time, "latency":latency, "decode_time": decode_time}), 200 
-
-    #return jsonify({"encode_size":encode_size, "encode_time":encode_time, "decode_size":[], "decode_time": []}), 200
     

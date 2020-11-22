@@ -2,18 +2,30 @@
     display: flex;
     margin-bottom: 1%;
 }
-  
+
 .LogInfo-chart {
     flex: 1;
     width: 35%;
     height: 225px;
     background-color: white;
     box-shadow: 0px 0px 1px grey;
-    border-radius:5px;
-  }
+    border-radius: 5px;
+}
 
 .LogInfo-chart:first-child {
     margin-right: 1%;
 }
 
-  
+.txtInfo {
+    height: 100%;
+    position: relative
+}
+
+.txtInfo p {
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%);
+}
